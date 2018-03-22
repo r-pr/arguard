@@ -1,0 +1,15 @@
+{
+  "name": "arguard",
+  "version": "1.0.0",
+  "description": "Utility to check function arguments",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "argument",
+    "validate"
+  ],
+  "author": "r-pr",
+  "license": "ISC"
+}
