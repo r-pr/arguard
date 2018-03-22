@@ -8,8 +8,46 @@ var STRING = 'string';
 var FUNCTION = 'function';
 var MUST_BE = ' must be';
 
+//---------new api------------
+
+function _number(param, paramName){
+    if (typeof param !== NUMBER || Number.isNaN(param)){
+        throw new Error(paramName + MUST_BE + ' a ' + NUMBER);
+    } 
+}
+
+function _positive(param, paramName){
+    _number(param, paramName);
+    if (param <= 0){
+        throw new Error(paramName + MUST_BE + ' positive');
+    }
+}
+
+_number.positive = _positive;
+
+module.exports.number = _number;
+
+module.exports.string = function _string(param, paramName){
+    if (typeof param !== STRING){
+        throw new Error(paramName + MUST_BE + ' a ' + STRING);
+    }
+};
+
+module.exports.func = function _func(param, paramName){
+    if (typeof param !== FUNCTION ){
+        throw new Error(paramName + MUST_BE + ' a ' + FUNCTION);
+    }
+};
+
+module.exports.object = function _object(param, paramName){
+    if (typeof param !== OBJECT || !param){
+        throw new Error(paramName + MUST_BE + ' an ' + OBJECT);
+    }
+};
+
+//----------old api-----------
 module.exports.throwIfNotAString = function _throwIfNotAString(param, paramName){
-    if (typeof param !== 'string'){
+    if (typeof param !== STRING){
         throw new Error(paramName + MUST_BE + ' a ' + STRING);
     }
 };
