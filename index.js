@@ -1,88 +1,88 @@
-/**
- * Я заметил, что часто повторяется код проверки аргументов функций, поэтому вынес его сюда.
- */
+'use strict';
 
+var BOOLEAN = 'boolean';
 var OBJECT = 'object';
 var NUMBER = 'number';
 var STRING = 'string';
 var FUNCTION = 'function';
 var MUST_BE = ' must be';
+var PARAM_NAME = 'paramName';
 
-//---------new api------------
+module.exports.bool = function _bool(param, paramName) {
+    _string(paramName, PARAM_NAME);
+    if (typeof param !== BOOLEAN) {
+        throw new Error(paramName + MUST_BE + ' a ' + BOOLEAN);
+    }
+};
 
-function _number(param, paramName){
-    if (typeof param !== NUMBER || Number.isNaN(param)){
+module.exports.func = function _func (param, paramName) {
+    _string(paramName, PARAM_NAME);
+    if (typeof param !== FUNCTION) {
+        throw new Error(paramName + MUST_BE + ' a ' + FUNCTION);
+    }
+};
+
+module.exports.object = function _object (param, paramName) {
+    _string(paramName, PARAM_NAME);
+    if (typeof param !== OBJECT || !param) {
+        throw new Error(paramName + MUST_BE + ' an ' + OBJECT);
+    }
+};
+
+function _array (param, paramName) {
+    _string(paramName, PARAM_NAME);
+    if (!Array.isArray(param)) {
+        throw new Error(paramName + MUST_BE + ' an array');
+    }
+};
+
+module.exports.array = _array;
+
+function _number (param, paramName) {
+    _string(paramName, PARAM_NAME);
+    if (typeof param !== NUMBER || Number.isNaN(param)) {
         throw new Error(paramName + MUST_BE + ' a ' + NUMBER);
-    } 
-}
-
-function _positive(param, paramName){
-    _number(param, paramName);
-    if (param <= 0){
-        throw new Error(paramName + MUST_BE + ' positive');
+    }
+    return {
+        positive: function(){
+            if (param <= 0) {
+                throw new Error(paramName + MUST_BE + ' a positive ' + NUMBER);
+            }
+        }
     }
 }
-
-_number.positive = _positive;
 
 module.exports.number = _number;
 
-module.exports.string = function _string(param, paramName){
-    if (typeof param !== STRING){
+function _string (param, paramName) {
+    if (typeof paramName !== STRING){
+        throw new Error(PARAM_NAME + MUST_BE + ' a ' + STRING);
+    }
+    if (typeof param !== STRING) {
         throw new Error(paramName + MUST_BE + ' a ' + STRING);
     }
-};
-
-module.exports.func = function _func(param, paramName){
-    if (typeof param !== FUNCTION ){
-        throw new Error(paramName + MUST_BE + ' a ' + FUNCTION);
+    return {
+        oneOf: function(arr){
+            _array(arr, '.oneOf() argument');
+            if (arr.length === 0){
+                throw new Error('empty array passed to .oneOf()');
+            }
+            for (var i = 0; i < arr.length; i++){
+                _string(arr[i], '.oneOf()[' + i + ']');
+                if (arr[i] === param){
+                    return;
+                }
+            }
+            throw new Error(paramName + MUST_BE + ' one of ' + JSON.stringify(arr))
+        }
     }
 };
 
-module.exports.object = function _object(param, paramName){
-    if (typeof param !== OBJECT || !param){
-        throw new Error(paramName + MUST_BE + ' an ' + OBJECT);
-    }
-};
+module.exports.string = _string;
 
-//----------old api-----------
-module.exports.throwIfNotAString = function _throwIfNotAString(param, paramName){
-    if (typeof param !== STRING){
-        throw new Error(paramName + MUST_BE + ' a ' + STRING);
-    }
-};
-
-module.exports.throwIfNotAnObject = function _throwIfNotAnObject(param, paramName){
-    if (typeof param !== OBJECT || !param){
-        throw new Error(paramName + MUST_BE + ' an ' + OBJECT);
-    }
-};
-
-module.exports.throwIfNotANumber =  function _throwIfNotANumber(param, paramName){
-    if (typeof param !== NUMBER || Number.isNaN(param)){
-        throw new Error(paramName + MUST_BE + ' a ' + NUMBER);
-    }
-};
-
-module.exports.throwIfNotAFunction =  function _throwIfNotAFunction(param, paramName){
-    if (typeof param !== FUNCTION ){
-        throw new Error(paramName + MUST_BE + ' a ' + FUNCTION);
-    }
-};
-
-module.exports.throwIfNotPositive = function _throwIfNotPositive(param, paramName){
-    if (param <= 0){
-        throw new Error(paramName + MUST_BE + ' positive');
-    }
-};
-
-
-/**
- * Часто используемые имена аргументов.
- */
-module.exports.frequentArgNames = {
+//fequently used arg names
+module.exports.names = {
     params: 'params',
     options: 'options',
-    ppkNum: 'ppkNum',
     cb: 'cb'
 };
