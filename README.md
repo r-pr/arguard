@@ -17,52 +17,27 @@ function foo(bar, baz, options){
 }
 ```
 
-- Readme
-- more info in package.json
+## API ##
 
-Similar module: aproba.
+| Function                                     | Throws errof if
+| :------------------------------------------- | :-------------------------------------------
+| bool(arg, argName)                           | typeof arg !== 'boolean'
+| object(arg, argName)                         | typeof arg !== 'object' OR !arg
+| array(arg, argName)                          | !Array.isArray(arg)
+| func(arg, argName)                           | typeof arg !== 'function'
+| number(arg, argName)                         | typeof arg !== 'number' OR Number.isNaN(arg)
+| number(arg, argName).positive()              | as above AND arg <= 0
+| string(arg, argName)                         | typeof !== 'string'
+| string(arg, argName).oneOf(['str1', 'str2']) | as above AND (arg != 'str1' AND arg != 'str2')
 
-
-aproba
-======
-
-A ridiculously light-weight function argument validator
+`arguard.names` is an object with 3 keys, which holds strings for common arguments names: 
 
 ```
-var validate = require("aproba")
-
-function myfunc(a, b, c) {
-  // `a` must be a string, `b` a number, `c` a function
-  validate('SNF', arguments) // [a,b,c] is also valid
+{
+	params: 'params',
+	options: 'options',
+	cb: 'cb'
 }
-
-myfunc('test', 23, function () {}) // ok
-myfunc(123, 23, function () {}) // type error
-myfunc('test', 23) // missing arg error
-myfunc('test', 23, function () {}, true) // too many args error
-
 ```
 
-Valid types are:
-
-| type | description
-| :--: | :----------
-| *    | matches any type
-| A    | `Array.isArray` OR an `arguments` object
-| S    | typeof == string
-| N    | typeof == number
-| F    | typeof == function
-| O    | typeof == object and not type A and not type E
-| B    | typeof == boolean
-| E    | `instanceof Error` OR `null` **(special: see below)**
-| Z    | == `null`
-
-Validation failures throw one of three exception types, distinguished by a
-`code` property of `EMISSINGARG`, `EINVALIDTYPE` or `ETOOMANYARGS`.
-
-If you pass in an invalid type then it will throw with a code of
-`EUNKNOWNTYPE`.
-
-If an **error** argument is found and is not null then the remaining
-arguments are optional.  That is, if you say `ESO` then that's like using a
-non-magical `E` in: `E|ESO|ZSO`.
+Similar module: [aproba](https://www.npmjs.com/package/aproba)
