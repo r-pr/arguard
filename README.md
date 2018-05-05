@@ -27,8 +27,9 @@ function foo(bar, baz, options){
 | func(arg, argName)                           | typeof arg !== 'function'
 | number(arg, argName)                         | typeof arg !== 'number' OR Number.isNaN(arg)
 | number(arg, argName).positive()              | as above AND arg <= 0
-| string(arg, argName)                         | typeof !== 'string'
+| string(arg, argName)                         | typeof arg !== 'string'
 | string(arg, argName).oneOf(['str1', 'str2']) | as above AND (arg != 'str1' AND arg != 'str2')
+| string(arg, argName).nonempty()              | typeof arg !== 'string' AND arg !== ''
 
 `arguard.names` is an object with 3 keys, which holds strings for common arguments names: 
 

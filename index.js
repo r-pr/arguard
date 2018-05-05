@@ -34,7 +34,7 @@ function _array (param, paramName) {
     if (!Array.isArray(param)) {
         throw new Error(paramName + MUST_BE + ' an array');
     }
-};
+}
 
 module.exports.array = _array;
 
@@ -49,7 +49,7 @@ function _number (param, paramName) {
                 throw new Error(paramName + MUST_BE + ' a positive ' + NUMBER);
             }
         }
-    }
+    };
 }
 
 module.exports.number = _number;
@@ -73,10 +73,15 @@ function _string (param, paramName) {
                     return;
                 }
             }
-            throw new Error(paramName + MUST_BE + ' one of ' + JSON.stringify(arr))
+            throw new Error(paramName + MUST_BE + ' one of ' + JSON.stringify(arr));
+        },
+        nonempty: function(){
+            if (param === ''){
+                throw new Error(paramName + ' must not be empty');
+            }
         }
-    }
-};
+    };
+}
 
 module.exports.string = _string;
 

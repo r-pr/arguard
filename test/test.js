@@ -77,6 +77,15 @@ describe('arguard.string().oneOf() ', function(){
     });
 });
 
+describe('arguard.string().nonempty() ', function(){
+    it('should throw error if string is empty', function(){
+        expect(function(){ arguard.string('', 'foo').nonempty(); }).to.throw(Error, /empty/);
+    });
+    it('should not throw error if string is not empty', function(){
+        expect(function(){ arguard.string('foo', 'foo').nonempty(); }).to.not.throw(Error);
+    });
+});
+
 describe('arguard.array() ', function(){
     it('should throw error if second arg is not a string', function(){
         expect(function(){ arguard.array(); }).to.throw(Error, /string/);
