@@ -1,8 +1,9 @@
 {
   "name": "arguard",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Function argument validator",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "eslint index.js --fix && mocha test"
   },
