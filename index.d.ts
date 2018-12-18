@@ -1,5 +1,3 @@
-///<reference path="arguard" />
-
 export interface IStringResult {
     oneOf: (arr: string[])=> void;
     nonempty: ()=> void;
@@ -21,8 +19,10 @@ export declare function object(param: any, paramName: string): void;
 
 export declare function array(param: any, paramName: string): void;
 
-export declare var names = {
-    params: 'params',
-    options: 'options',
-    cb: 'cb'
+interface IVarNames {
+    params: 'params';
+    options: 'options';
+    cb: 'cb';
 }
+
+export declare var names: IVarNames;
