@@ -25,4 +25,11 @@ interface IVarNames {
     cb: 'cb';
 }
 
+interface IMaybe {
+    number: (param: any, paramName: string)=> INumberResult;
+    string: (param: any, paramName: string)=> IStringResult;
+    bool: (param: any, paramName: string)=> void;
+    func: (param: any, paramName: string)=> void;
+}
+
 export declare var names: IVarNames;

@@ -26,7 +26,7 @@ describe('arguard.number() ', function(){
 });
 
 describe('arguard.number().positive() ', function(){
-    it('should throw error if first arg is a negative number o zero', function(){
+    it('should throw error if first arg is a negative number or zero', function(){
         var inputs = [ -Infinity, -3.14, -0, 0, +0 ];
         for (var i = 0; i < inputs.length; i++){
             expect(function(){ arguard.number(inputs[i], 'foo').positive(); }).to.throw(Error, /positive number/);
@@ -151,6 +151,141 @@ describe('arguard.bool() ', function(){
         expect(function(){ arguard.bool( false, 'foo'); }).to.not.throw(Error);
     });
 });
+
+describe('maybe', function(){
+	describe('arguard.number() ', function(){
+        it('should throw error if second arg is not a string', function(){
+            expect(function(){ arguard.maybe.number(); }).to.throw(Error, /string/);
+            expect(function(){ arguard.maybe.number(1); }).to.throw(Error, /string/);
+        });
+        it('should not throw error if first arg is undefined', function(){
+            expect(function(){ arguard.maybe.number(undefined, 'foo'); }).to.not.throw(Error);
+        });
+        it('should throw error if first arg is not a number or NaN', function(){
+            var inputs = [null, true, false, '1', NaN, {}, [], function(){} ];
+            for (var i = 0; i < inputs.length; i++){
+                expect(function(){ arguard.maybe.number(inputs[i], 'foo'); }).to.throw(Error, /number/);
+            }
+        });
+        it('should not throw error if first arg is a number', function(){
+            var inputs = [-Infinity, -100, 0, 100.32, Infinity, -0];
+            for (var i = 0; i < inputs.length; i++){
+                expect(function(){ arguard.maybe.number(inputs[i], 'foo'); }).to.not.throw(Error);
+            }
+        });
+        it('should return object with member called "positive"', function(){
+            var result = arguard.maybe.number(1, 'foo');
+            expect(result).to.have.a.property('positive');
+        });
+	});
+    describe('arguard.number().positive() ', function(){
+        it('should not throw error if first arg is undefined', function(){
+            expect(function(){ arguard.maybe.number(undefined, 'foo').positive(); }).to.not.throw(Error);
+        });
+
+        it('should throw error if first arg is a negative number or zero', function(){
+            var inputs = [ -Infinity, -3.14, -0, 0, +0 ];
+            for (var i = 0; i < inputs.length; i++){
+                expect(function(){ arguard.maybe.number(inputs[i], 'foo').positive(); }).to.throw(Error, /positive number/);
+            }
+        });
+        it('should not throw error if first arg is a positive number', function(){
+            var inputs = [1, 100.32, Infinity];
+            for (var i = 0; i < inputs.length; i++){
+                expect(function(){ arguard.maybe.number(inputs[i], 'foo').positive(); }).to.not.throw(Error);
+            }
+        });
+    });
+    describe('arguard.string() ', function(){
+        it('should throw error if second arg is not a string', function(){
+            expect(function(){ arguard.maybe.string(); }).to.throw(Error, /string/);
+            expect(function(){ arguard.maybe.string('foo'); }).to.throw(Error, /string/);
+        });
+        it('should not throw error if first arg is undefined', function(){
+            expect(function(){ arguard.maybe.string(undefined, 'foo'); }).to.not.throw(Error);
+        });
+        it('should throw error if first arg is not a string', function(){
+            var inputs = [null, true, false, 1, -1, NaN, {}, [], function(){} ];
+            for (var i = 0; i < inputs.length; i++){
+                expect(function(){ arguard.maybe.string(inputs[i], 'foo'); }).to.throw(Error, /string/);
+            }
+        });
+        it('should not throw error if first arg is a string', function(){
+            var inputs = ['', 'foo', Date.now().toString() ];
+            for (var i = 0; i < inputs.length; i++){
+                expect(function(){ arguard.maybe.string(inputs[i], 'foo'); }).to.not.throw(Error);
+            }
+        });
+    });
+    describe('arguard.string().oneOf() ', function(){
+        it('should not throw error if first arg is undefined', function(){
+            expect(function(){ arguard.maybe.string(undefined, 'foo').oneOf(['bar', 'baz']); }).to.not.throw(Error);
+        });
+        it('should throw error if arg passed to oneOf is not an array', function(){
+            expect(function(){ arguard.maybe.string('foo', 'foo').oneOf('foo', 'bar'); }).to.throw(Error, /array/);
+        });
+        it('should throw error if array passed to oneOf is empty', function(){
+            expect(function(){ arguard.maybe.string('foo', 'foo').oneOf([]); }).to.throw(Error, /empty/);
+        });
+        it('should throw error if arg passed to oneOf contains non-string element', function(){
+            expect(function(){ arguard.maybe.string('foo', 'foo').oneOf(['bar', 1]); }).to.throw(Error, /oneOf/);
+        });
+        it('should throw error if string is not in the array passed to oneOf', function(){
+            expect(function(){ arguard.maybe.string('foo', 'foo').oneOf(['bar', 'baz']); }).to.throw(Error, /one of/);
+        });
+        it('should not throw error if string is in the array passed to oneOf', function(){
+            expect(function(){ arguard.maybe.string('foo', 'foo').oneOf(['bar', 'foo']); }).to.not.throw(Error);
+        });
+    });
+    describe('arguard.string().nonempty() ', function(){
+        it('should throw error if string is empty', function(){
+            expect(function(){ arguard.maybe.string('', 'foo').nonempty(); }).to.throw(Error, /empty/);
+        });
+        it('should not throw error if string is not empty', function(){
+            expect(function(){ arguard.maybe.string('foo', 'foo').nonempty(); }).to.not.throw(Error);
+        });
+        it('should not throw error if first arg is undefined', function(){
+            expect(function(){ arguard.maybe.string(undefined, 'foo').nonempty(); }).to.not.throw(Error);
+        });
+    });
+    describe('arguard.func() ', function(){
+        it('should throw error if second arg is not a string', function(){
+            expect(function(){ arguard.maybe.func(); }).to.throw(Error, /string/);
+            expect(function(){ arguard.maybe.func( function(){} ); }).to.throw(Error, /string/);
+        });
+        it('should not throw error if first arg is undefined', function(){
+            expect(function(){ arguard.maybe.func(undefined, 'foo'); }).to.not.throw(Error);
+        });
+        it('should throw error if first arg is not a function', function(){
+            var inputs = [null, true, false, 1, NaN, 'hello', '', {}, [] ];
+            for (var i = 0; i < inputs.length; i++){
+                expect(function(){ arguard.maybe.func(inputs[i], 'foo'); }).to.throw(Error, /function/);
+            }
+        });
+        it('should not throw error if first arg is a function', function(){
+            expect(function(){ arguard.maybe.func( function(){}, 'foo'); }).to.not.throw(Error);
+        });
+    });
+    describe('arguard.bool() ', function(){
+        it('should throw error if second arg is not a string', function(){
+            expect(function(){ arguard.maybe.bool(); }).to.throw(Error, /string/);
+            expect(function(){ arguard.maybe.bool(true); }).to.throw(Error, /string/);
+        });
+        it('should not throw error if first arg is undefined', function(){
+            expect(function(){ arguard.maybe.bool(undefined, 'foo'); }).to.not.throw(Error);
+        });
+        it('should throw error if first arg is not a boolean', function(){
+            var inputs = [null, 1, NaN, 'hello', '', function(){}, [], {} ];
+            for (var i = 0; i < inputs.length; i++){
+                expect(function(){ arguard.maybe.bool(inputs[i], 'foo'); }).to.throw(Error, /boolean/);
+            }
+        });
+        it('should not throw error if first arg is an object', function(){
+            expect(function(){ arguard.maybe.bool( true, 'foo'); }).to.not.throw(Error);
+            expect(function(){ arguard.maybe.bool( false, 'foo'); }).to.not.throw(Error);
+        });
+    });
+})
 
 describe('arguard.names ', function(){
     it('.params == "params"', function(){

@@ -5,30 +5,35 @@ var OBJECT = 'object';
 var NUMBER = 'number';
 var STRING = 'string';
 var FUNCTION = 'function';
+var UNDEFINED = 'undefined';
 var MUST_BE = ' must be';
 var PARAM_NAME = 'paramName';
 
-module.exports.bool = function _bool(param, paramName) {
+module.exports.bool = _bool;
+function _bool(param, paramName) {
     _string(paramName, PARAM_NAME);
     if (typeof param !== BOOLEAN) {
         throw new Error(paramName + MUST_BE + ' a ' + BOOLEAN);
     }
-};
+}
 
-module.exports.func = function _func (param, paramName) {
+module.exports.func = _func;
+function _func (param, paramName) {
     _string(paramName, PARAM_NAME);
     if (typeof param !== FUNCTION) {
         throw new Error(paramName + MUST_BE + ' a ' + FUNCTION);
     }
-};
+}
 
-module.exports.object = function _object (param, paramName) {
+module.exports.object = _object;
+function _object (param, paramName) {
     _string(paramName, PARAM_NAME);
     if (typeof param !== OBJECT || !param) {
         throw new Error(paramName + MUST_BE + ' an ' + OBJECT);
     }
-};
+}
 
+module.exports.array = _array;
 function _array (param, paramName) {
     _string(paramName, PARAM_NAME);
     if (!Array.isArray(param)) {
@@ -36,8 +41,7 @@ function _array (param, paramName) {
     }
 }
 
-module.exports.array = _array;
-
+module.exports.number = _number;
 function _number (param, paramName) {
     _string(paramName, PARAM_NAME);
     if (typeof param !== NUMBER || Number.isNaN(param)) {
@@ -52,8 +56,7 @@ function _number (param, paramName) {
     };
 }
 
-module.exports.number = _number;
-
+module.exports.string = _string;
 function _string (param, paramName) {
     if (typeof paramName !== STRING){
         throw new Error(PARAM_NAME + MUST_BE + ' a ' + STRING);
@@ -83,11 +86,43 @@ function _string (param, paramName) {
     };
 }
 
-module.exports.string = _string;
+function emptyFunc(){
+    return;
+}
 
 //fequently used arg names
 module.exports.names = {
     params: 'params',
     options: 'options',
-    cb: 'cb'
+    cb: 'cb',
+};
+
+//allow undefined
+module.exports.maybe = {
+    number: function(param, paramName){
+        _string(paramName, PARAM_NAME);
+        if (typeof param === UNDEFINED){
+            return { positive: emptyFunc };
+        }
+        return _number(param, paramName);
+    },
+    string: function(param, paramName){
+        _string(paramName, PARAM_NAME);
+        if (typeof param === UNDEFINED){
+            return { oneOf: emptyFunc, nonempty: emptyFunc };
+        }
+        return _string(param, paramName);
+    },
+    func: function(param, paramName){
+        _string(paramName, PARAM_NAME);
+        if (typeof param !== UNDEFINED){
+            _func(param, paramName);
+        }
+    },
+    bool: function(param, paramName){
+        _string(paramName, PARAM_NAME);
+        if (typeof param !== UNDEFINED){
+            _bool(param, paramName);
+        }
+    },
 };

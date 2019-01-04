@@ -31,6 +31,8 @@ function foo(bar, baz, options){
 | string(arg, argName).oneOf(['str1', 'str2']) | as above AND (arg != 'str1' AND arg != 'str2')
 | string(arg, argName).nonempty()              | typeof arg !== 'string' AND arg !== ''
 
+`arguard.maybe.number(..)`, `arguard.maybe.string(..)`, `arguard.maybe.bool(..)`, `arguard.maybe.func(..)` allow first argument to be `undefined` but otherwise behave as specified above.
+
 `arguard.names` is an object with 3 keys, which holds strings for common arguments names: 
 
 ```
