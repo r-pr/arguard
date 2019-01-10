@@ -1,6 +1,6 @@
 {
   "name": "arguard",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Function argument validator",
   "main": "index.js",
   "types": "index.d.ts",

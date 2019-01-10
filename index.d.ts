@@ -33,3 +33,5 @@ interface IMaybe {
 }
 
 export declare var names: IVarNames;
+
+export declare var maybe: IMaybe;
